@@ -1,16 +1,35 @@
-import React from 'react';
+import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import YTSearch from 'youtube-api-search';
 
 import SearchBar from './components/search_bar';
+import APIData from './api_data';
+import VideoList from './components/video_list';
 
 
-// Create class App
-const App = () => {
-	return (
-		<div>
-			<SearchBar />
-		</div>
-	);
+const API_KEY = APIData.videokey;
+
+
+class App extends Component {
+	constructor(props) {
+		super(props);
+
+		this.state = { videos: [] };
+
+		// Due to Downward dataflow only the most parent Component should get access to external APIs
+		YTSearch({ key : API_KEY, term : 'fortaleza'}, videos => {
+			this.setState({ videos }); // ES6 code for this.setState({ videos: videos });
+		});
+	}
+
+	render() {
+		return (
+			<div>
+				<SearchBar />
+				<VideoList videos={this.state.videos}/>
+			</div>
+		);
+	}
 }
 
 // Instanciate App and place it in div with the class container in the DOM
