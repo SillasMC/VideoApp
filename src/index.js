@@ -15,11 +15,17 @@ class App extends Component {
 	constructor(props) {
 		super(props);
 
-		this.state = { videos: [] };
+		this.state = {
+			videos: [],
+			selectedVideo: null
+		};
 
 		// Due to Downward dataflow only the most parent Component should get access to external APIs
 		YTSearch({ key : API_KEY, term : 'fortaleza'}, videos => {
-			this.setState({ videos }); // ES6 code for this.setState({ videos: videos });
+			this.setState({
+				videos: videos,
+				selectedVideo: videos[0]
+			}); // ES6 code for this.setState({ videos: videos });
 		});
 	}
 
@@ -27,8 +33,10 @@ class App extends Component {
 		return (
 			<div>
 				<SearchBar />
-				<VideoDetail video={this.state.videos[0]} />
-				<VideoList videos={this.state.videos}/>
+				<VideoDetail video={this.state.selectedVideo} />
+				<VideoList
+					onVideoSelect={selectedVideo => this.setState({selectedVideo})}
+					videos={this.state.videos}/>
 			</div>
 		);
 	}
